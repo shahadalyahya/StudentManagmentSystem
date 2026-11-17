@@ -1,4 +1,4 @@
-package model;
+package Model;
 
 public class Student {
 
@@ -7,12 +7,11 @@ public class Student {
 	private double grade;
 	private String nationalId;
 
-	public Student(String nationalId, String name, int age, double grade) {
+	public Student( String nationalId, String name, int age, double grade) {
 		this.name = name;
 		this.age = age;
 		this.grade = grade;
-		this.SetNatioalId(nationalId);
-
+		this.nationalId = nationalId;
 	}
 
 	public Student() {
@@ -24,31 +23,6 @@ public class Student {
 
 	public void SetAge(int age) {
 		this.age = age;
-	}
-
-	public void SetGrade(int grade) {
-		this.grade = grade;
-	}
-
-	public void SetNatioalId(String nationalId) {
-		// 1. Check if empty or null
-		if (nationalId == null || nationalId.trim().isEmpty()) {
-			throw new IllegalArgumentException("National ID cannot be empty.");
-		}
-		// 2. Check if it contains numbers only
-		if (!nationalId.matches("[0-9]+")) {
-			throw new IllegalArgumentException("National ID must contain numbers only");
-		}
-		// 3. Check if it starts with 1 or 2
-		if (!nationalId.startsWith("1") && !nationalId.startsWith("2")) {
-			throw new IllegalArgumentException("National ID must start with 1 or 2");
-		}
-		// 4. Check length
-		if (nationalId.length() != 10) {
-			throw new IllegalArgumentException("National ID must be exactly 10 digits");
-		}
-
-		this.nationalId = nationalId;
 	}
 
 	public String getName() {
@@ -67,6 +41,22 @@ public class Student {
 		return nationalId;
 	}
 
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	public void setGrade(double grade) {
+		this.grade = grade;
+	}
+
+	public void setNationalId(String nationalId) {
+		this.nationalId = nationalId;
+	}
 	public String studentStatus(double grade) {
 		if (grade >= 60) {
 			return "Passed";
@@ -89,12 +79,12 @@ public class Student {
 		}
 	}
 
+
 	public String showStudentInfo() {
-		return "Student information: \nNatonal ID: " + getNationalId() + "\nName: " + getName() + "\nAge: " + getAge()
-				+ "\nGrade: " + getGrade() + "\nGrade Level: " + studentStatus(grade) + "\nStatus: "
+
+		return "Student information: \n" + "National ID: " + getNationalId() + "\nName: " + getName() + "\nAge: "
+				+ getAge() + "\nGrade: " + getGrade() + "\nGrade Level: " + getGradeLevel(grade) + "\nStatus: "
 				+ studentStatus(grade);
 	}
-
-	
 
 }
