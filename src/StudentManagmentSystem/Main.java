@@ -4,6 +4,7 @@ package StudentManagmentSystem;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+
 import Model.Student;
 
 public class Main {
@@ -16,6 +17,7 @@ public class Main {
     }
 
     private static void showMainMenu() {
+
         int option;
 
         do {
@@ -26,8 +28,17 @@ public class Main {
                 scanner.nextLine();
 
                 switch (option) {
+
                 case 1:
                     addStudent();
+                    break;
+
+                case 2:
+                    showStudent();
+                    break;
+
+                case 3:
+                    findStudent();
                     break;
 
                 case 0:
@@ -48,11 +59,14 @@ public class Main {
     }
 
     private static void showMenu() {
+
         System.out.println("\n======================================");
         System.out.println("       STUDENT MANAGEMENT SYSTEM");
         System.out.println("======================================");
         System.out.println("Welcome! Manage your student records");
         System.out.println("\n1. Add New Student");
+        System.out.println("2. View All Students");
+        System.out.println("3. Search for a Student");
         System.out.println("0. Exit");
         System.out.print("\nEnter your choice: ");
     }
@@ -123,6 +137,34 @@ public class Main {
         System.out.println("Student added successfully!");
     }
 
+    private static void showStudent() {
+
+        if (students.isEmpty()) {
+            System.out.println("No students found");
+            return;
+        }
+
+        System.out.println("\n--- Student List ---");
+
+        for (Student std : students) {
+            System.out.println(std.showStudentInfo());
+            System.out.println("-------------------------");
+        }
+    }
+
+    private static void findStudent() {
+
+        String nationalId = getValidNationalId();
+
+        Student student = findStudentByNationalId(nationalId);
+
+        if (student != null) {
+            System.out.println(student.showStudentInfo());
+        } else {
+            System.out.println("Student not found!");
+        }
+    }
+
     private static Student findStudentByNationalId(String id) {
 
         for (Student student : students) {
@@ -159,4 +201,5 @@ public class Main {
 
         return nationalId;
     }
+
 }
