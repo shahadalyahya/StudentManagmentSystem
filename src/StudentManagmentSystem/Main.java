@@ -9,197 +9,279 @@ import Model.Student;
 
 public class Main {
 
-    static Scanner scanner = new Scanner(System.in);
-    static ArrayList<Student> students = new ArrayList<>();
+	static Scanner scanner = new Scanner(System.in);
+	static ArrayList<Student> students = new ArrayList<>();
 
-    public static void main(String[] args) {
-        showMainMenu();
-    }
+	public static void main(String[] args) {
+		showMainMenu();
+	}
 
-    private static void showMainMenu() {
+	private static void showMainMenu() {
 
-        int option;
+		int option;
 
-        do {
-            showMenu();
+		do {
+			showMenu();
 
-            try {
-                option = scanner.nextInt();
-                scanner.nextLine();
+			try {
+				option = scanner.nextInt();
+				scanner.nextLine();
 
-                switch (option) {
+				switch (option) {
 
-                case 1:
-                    addStudent();
-                    break;
+				case 1:
+					addStudent();
+					break;
 
-                case 2:
-                    showStudent();
-                    break;
+				case 2:
+					showStudent();
+					break;
 
-                case 3:
-                    findStudent();
-                    break;
+				case 3:
+					findStudent();
+					break;
 
-                case 0:
-                    System.out.println("\nThank you for using our system!");
-                    break;
+				case 4:
+					updateStudent();
+					break;
 
-                default:
-                    System.out.println("\nInvalid option. Please try again");
-                }
+				case 0:
+					System.out.println("\nThank you for using our system!");
+					break;
 
-            } catch (InputMismatchException e) {
-                scanner.nextLine();
-                option = -1;
-                System.out.println("Please enter a valid number");
-            }
+				default:
+					System.out.println("\nInvalid option. Please try again");
+				}
 
-        } while (option != 0);
-    }
+			} catch (InputMismatchException e) {
+				scanner.nextLine();
+				option = -1;
+				System.out.println("Please enter a valid number");
+			}
 
-    private static void showMenu() {
+		} while (option != 0);
+	}
 
-        System.out.println("\n======================================");
-        System.out.println("       STUDENT MANAGEMENT SYSTEM");
-        System.out.println("======================================");
-        System.out.println("Welcome! Manage your student records");
-        System.out.println("\n1. Add New Student");
-        System.out.println("2. View All Students");
-        System.out.println("3. Search for a Student");
-        System.out.println("0. Exit");
-        System.out.print("\nEnter your choice: ");
-    }
+	private static void showMenu() {
 
-    private static void addStudent() {
+		System.out.println("\n======================================");
+		System.out.println("       STUDENT MANAGEMENT SYSTEM");
+		System.out.println("======================================");
+		System.out.println("Welcome! Manage your student records");
+		System.out.println("\n1. Add New Student");
+		System.out.println("2. View All Students");
+		System.out.println("3. Search for a Student");
+		System.out.println("4. Update Student");
+		System.out.println("0. Exit");
+		System.out.print("\nEnter your choice: ");
+	}
 
-        String nationalId = getValidNationalId();
+	private static void addStudent() {
 
-        while (findStudentByNationalId(nationalId) != null) {
-            System.out.println("This National ID already exists!");
-            nationalId = getValidNationalId();
-        }
+		String nationalId = getValidNationalId();
 
-        System.out.println("Enter student name:");
-        String name = scanner.nextLine();
+		while (findStudentByNationalId(nationalId) != null) {
+			System.out.println("This National ID already exists!");
+			nationalId = getValidNationalId();
+		}
 
-        while (name.trim().isEmpty()) {
-            System.out.println("Name cannot be empty\nTry again:");
-            name = scanner.nextLine();
-        }
+		System.out.println("Enter student name:");
+		String name = scanner.nextLine();
 
-        System.out.println("Enter student age:");
+		while (name.trim().isEmpty()) {
+			System.out.println("Name cannot be empty\nTry again:");
+			name = scanner.nextLine();
+		}
 
-        while (!scanner.hasNextInt()) {
-            System.out.println("Please enter a valid integer:");
-            scanner.nextLine();
-        }
+		System.out.println("Enter student age:");
 
-        int age = scanner.nextInt();
-        scanner.nextLine();
+		while (!scanner.hasNextInt()) {
+			System.out.println("Please enter a valid integer:");
+			scanner.nextLine();
+		}
 
-        while (age <= 0) {
-            System.out.println("Age must be greater than zero\nTry again:");
+		int age = scanner.nextInt();
+		scanner.nextLine();
 
-            while (!scanner.hasNextInt()) {
-                System.out.println("Please enter a valid integer:");
-                scanner.nextLine();
-            }
+		while (age <= 0) {
+			System.out.println("Age must be greater than zero\nTry again:");
 
-            age = scanner.nextInt();
-            scanner.nextLine();
-        }
+			while (!scanner.hasNextInt()) {
+				System.out.println("Please enter a valid integer:");
+				scanner.nextLine();
+			}
 
-        System.out.println("Enter student grade:");
+			age = scanner.nextInt();
+			scanner.nextLine();
+		}
 
-        while (!scanner.hasNextDouble()) {
-            System.out.println("Please enter a valid number:");
-            scanner.nextLine();
-        }
+		System.out.println("Enter student grade:");
 
-        double grade = scanner.nextDouble();
-        scanner.nextLine();
+		while (!scanner.hasNextDouble()) {
+			System.out.println("Please enter a valid number:");
+			scanner.nextLine();
+		}
 
-        while (grade < 0 || grade > 100) {
-            System.out.println("Grade must be between 0 and 100 \nTry again:");
+		double grade = scanner.nextDouble();
+		scanner.nextLine();
 
-            while (!scanner.hasNextDouble()) {
-                System.out.println("Please enter a valid number:");
-                scanner.nextLine();
-            }
+		while (grade < 0 || grade > 100) {
+			System.out.println("Grade must be between 0 and 100 \nTry again:");
 
-            grade = scanner.nextDouble();
-            scanner.nextLine();
-        }
+			while (!scanner.hasNextDouble()) {
+				System.out.println("Please enter a valid number:");
+				scanner.nextLine();
+			}
 
-        students.add(new Student(nationalId, name, age, grade));
+			grade = scanner.nextDouble();
+			scanner.nextLine();
+		}
 
-        System.out.println("Student added successfully!");
-    }
+		students.add(new Student(nationalId, name, age, grade));
 
-    private static void showStudent() {
+		System.out.println("Student added successfully!");
+	}
 
-        if (students.isEmpty()) {
-            System.out.println("No students found");
-            return;
-        }
+	private static void showStudent() {
 
-        System.out.println("\n--- Student List ---");
+		if (students.isEmpty()) {
+			System.out.println("No students found");
+			return;
+		}
 
-        for (Student std : students) {
-            System.out.println(std.showStudentInfo());
-            System.out.println("-------------------------");
-        }
-    }
+		System.out.println("\n--- Student List ---");
 
-    private static void findStudent() {
+		for (Student std : students) {
+			System.out.println(std.showStudentInfo());
+			System.out.println("-------------------------");
+		}
+	}
 
-        String nationalId = getValidNationalId();
+	private static void findStudent() {
 
-        Student student = findStudentByNationalId(nationalId);
+		String nationalId = getValidNationalId();
 
-        if (student != null) {
-            System.out.println(student.showStudentInfo());
-        } else {
-            System.out.println("Student not found!");
-        }
-    }
+		Student student = findStudentByNationalId(nationalId);
 
-    private static Student findStudentByNationalId(String id) {
+		if (student != null) {
+			System.out.println(student.showStudentInfo());
+		} else {
+			System.out.println("Student not found!");
+		}
+	}
 
-        for (Student student : students) {
-            if (student.getNationalId().equals(id)) {
-                return student;
-            }
-        }
+	private static void updateStudent() {
 
-        return null;
-    }
+		String nationalId = getValidNationalId();
 
-    private static String getValidNationalId() {
+		Student student = findStudentByNationalId(nationalId);
 
-        System.out.print("Enter National ID: ");
-        String nationalId = scanner.nextLine();
+		if (student == null) {
+			System.out.println("Student not found!");
+			return;
+		}
 
-        while (!nationalId.matches("[12][0-9]{9}")) {
+		System.out.print("Enter new name: ");
+		String name = scanner.nextLine();
 
-            System.out.println("Invalid National ID!");
+		while (name.trim().isEmpty()) {
+			System.out.println("Name cannot be empty!");
+			System.out.print("Enter new name: ");
+			name = scanner.nextLine();
+		}
 
-            if (nationalId.trim().isEmpty()) {
-                System.out.println("National ID cannot be empty");
-            } else if (nationalId.length() != 10) {
-                System.out.println("National ID must contain exactly 10 digits");
-            } else if (!nationalId.matches("[12].*")) {
-                System.out.println("National ID must start with 1 or 2");
-            } else {
-                System.out.println("National ID must contain digits only");
-            }
+		System.out.print("Enter new age: ");
 
-            System.out.print("Enter National ID again: ");
-            nationalId = scanner.nextLine();
-        }
+		while (!scanner.hasNextInt()) {
+			System.out.println("Please enter a valid integer!");
+			scanner.nextLine();
+			System.out.print("Enter new age: ");
+		}
 
-        return nationalId;
-    }
+		int age = scanner.nextInt();
+		scanner.nextLine();
+
+		while (age <= 0) {
+			System.out.println("Age must be greater than zero!");
+			System.out.print("Enter new age: ");
+
+			while (!scanner.hasNextInt()) {
+				System.out.println("Please enter a valid integer!");
+				scanner.nextLine();
+				System.out.print("Enter new age: ");
+			}
+
+			age = scanner.nextInt();
+			scanner.nextLine();
+		}
+
+		System.out.print("Enter new grade: ");
+
+		while (!scanner.hasNextDouble()) {
+			System.out.println("Please enter a valid number!");
+			scanner.nextLine();
+			System.out.print("Enter new grade: ");
+		}
+
+		double grade = scanner.nextDouble();
+		scanner.nextLine();
+
+		while (grade < 0 || grade > 100) {
+			System.out.println("Grade must be between 0 and 100!");
+			System.out.print("Enter new grade: ");
+
+			while (!scanner.hasNextDouble()) {
+				System.out.println("Please enter a valid number!");
+				scanner.nextLine();
+				System.out.print("Enter new grade: ");
+			}
+
+			grade = scanner.nextDouble();
+			scanner.nextLine();
+		}
+
+		student.setName(name);
+		student.setAge(age);
+		student.setGrade(grade);
+
+		System.out.println("Student updated successfully!");
+	}
+
+	private static Student findStudentByNationalId(String id) {
+
+		for (Student student : students) {
+			if (student.getNationalId().equals(id)) {
+				return student;
+			}
+		}
+
+		return null;
+	}
+
+	private static String getValidNationalId() {
+
+		System.out.print("Enter National ID: ");
+		String nationalId = scanner.nextLine();
+
+		while (!nationalId.matches("[12][0-9]{9}")) {
+
+			System.out.println("Invalid National ID!");
+
+			if (nationalId.trim().isEmpty()) {
+				System.out.println("National ID cannot be empty");
+			} else if (nationalId.length() != 10) {
+				System.out.println("National ID must contain exactly 10 digits");
+			} else if (!nationalId.matches("[12].*")) {
+				System.out.println("National ID must start with 1 or 2");
+			} else {
+				System.out.println("National ID must contain digits only");
+			}
+
+			System.out.print("Enter National ID again: ");
+			nationalId = scanner.nextLine();
+		}
+
+		return nationalId;
+	}
 
 }
