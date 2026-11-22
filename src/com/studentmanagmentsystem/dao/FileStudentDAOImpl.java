@@ -3,9 +3,12 @@ package com.studentmanagmentsystem.dao;
 import java.nio.file.Path;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.io.UncheckedIOException;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.BufferedWriter;
 import com.studentmanagmentsystem.model.Student;
 
 
@@ -36,8 +39,35 @@ public class FileStudentDAOImpl implements StudentDAO  {
 
 	@Override
 	public boolean deleteStudent(String nationalId) {
-		// TODO Auto-generated method stub
-		return false;
+
+	    if (Files.notExists(filePath)) {
+	        return false;
+	    }
+
+	    try {
+	        List<String> lines = Files.readAllLines(filePath);
+
+	        boolean isDeleted = lines.removeIf(line -> {
+	            String[] data = line.split(",");
+	            return data.length == 4 && data[0].equals(nationalId);
+	        });
+
+	        if (!isDeleted) {
+	            return false;
+	        }
+
+	        Files.write(
+	            filePath,
+	            lines,
+	            StandardOpenOption.TRUNCATE_EXISTING,
+	            StandardOpenOption.WRITE
+	        );
+
+	        return true;
+
+	    } catch (IOException e) {
+	        throw new UncheckedIOException("Failed to delete student", e);
+	    }
 	}
 
 	@Override
@@ -45,7 +75,7 @@ public class FileStudentDAOImpl implements StudentDAO  {
 
 		List<Student> students = new ArrayList<>();
 
-		try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+		try (BufferedReader reader = Files.newBufferedReader(filePath)) {
 
 			String line;
 
@@ -65,11 +95,7 @@ public class FileStudentDAOImpl implements StudentDAO  {
 		return students;
 	}
 
-	@Override
-	public Student findStudentByNationalId(String nationalId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 	@Override
 	public boolean updateStudent(String nationalId, Student updatedStudent) {
@@ -90,7 +116,7 @@ public class FileStudentDAOImpl implements StudentDAO  {
 
 		if (found) {
 
-			try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+			try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardOpenOption.CREATE , StandardOpenOption.APPEND)) {
 
 				for (Student student : students) {
 
