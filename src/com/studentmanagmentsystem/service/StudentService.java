@@ -1,20 +1,25 @@
 package com.studentmanagmentsystem.service;
 
+import java.io.IOException;
 import java.util.List;
 import com.studentmanagmentsystem.dao.StudentDAO;
+import com.studentmanagmentsystem.file.StudentFileDAO;
 import com.studentmanagmentsystem.model.Student;
 
 public class StudentService {
 
 	private StudentDAO studentDAO;
+	private StudentFileDAO studentFileDAO;
 
 	/**
 	 * Creates a StudentService with the specified data access object
 	 * 
 	 * @param studentDAO the data access implementation used to manage students
 	 */
-	public StudentService(StudentDAO studentDAO) {
+	public StudentService(StudentDAO studentDAO, StudentFileDAO studentFileDAO) {
+
 		this.studentDAO = studentDAO;
+		this.studentFileDAO = studentFileDAO;
 	}
 
 	/**
@@ -159,6 +164,18 @@ public class StudentService {
 		}
 
 		return nationalId;
+	}
+
+	public void saveStudentsToFile() throws IOException {
+
+		List<Student> students = studentDAO.getAllStudents();
+
+		studentFileDAO.saveStudents(students);
+	}
+
+	public List<String> getStudentsFromFile() throws IOException {
+
+		return studentFileDAO.readStudents();
 	}
 
 }
