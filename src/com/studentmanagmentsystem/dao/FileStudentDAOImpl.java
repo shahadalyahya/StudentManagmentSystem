@@ -40,13 +40,74 @@ public class FileStudentDAOImpl implements StudentDAO  {
 		return false;
 	}
 
-
 	@Override
 	public List<Student> getAllStudents() {
+
+		List<Student> students = new ArrayList<>();
+
+		try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+
+			String line;
+
+			while ((line = reader.readLine()) != null) {
+
+				String[] data = line.split(",");
+
+				Student student = new Student(data[0], data[1], Integer.parseInt(data[2]), Double.parseDouble(data[3]));
+
+				students.add(student);
+			}
+
+		} catch (IOException e) {
+			System.out.println("Error reading students file: " + e.getMessage());
+		}
+
+		return students;
+	}
+
+	@Override
+	public Student findStudentByNationalId(String nationalId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
+	public boolean updateStudent(String nationalId, Student updatedStudent) {
+
+		List<Student> students = getAllStudents();
+
+		boolean found = false;
+
+		for (int i = 0; i < students.size(); i++) {
+
+			if (students.get(i).getNationalId().equals(nationalId)) {
+
+				students.set(i, updatedStudent);
+				found = true;
+				break;
+			}
+		}
+
+		if (found) {
+
+			try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+
+				for (Student student : students) {
+
+					writer.write(student.getNationalId() + "," + student.getName() + "," + student.getAge() + ","
+							+ student.getGrade());
+
+					writer.newLine();
+				}
+
+			} catch (IOException e) {
+				System.out.println("Error updating students file: " + e.getMessage());
+				return false;
+			}
+		}
+
+		return found;
+	}
 
 	@Override
 	public Student findStudentByNationalId(String nationalId) {
