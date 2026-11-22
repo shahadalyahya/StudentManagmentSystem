@@ -1,9 +1,11 @@
 package com.studentmanagmentsystem.controller;
 
+import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import com.studentmanagmentsystem.dao.StudentDAOImpl;
+import com.studentmanagmentsystem.file.StudentFileDAOImpl;
 import com.studentmanagmentsystem.model.Student;
 import com.studentmanagmentsystem.service.StudentService;
 
@@ -16,7 +18,7 @@ import com.studentmanagmentsystem.service.StudentService;
 public class Main {
 
 	static Scanner scanner = new Scanner(System.in);
-	static StudentService studentService = new StudentService(new StudentDAOImpl());
+	static StudentService studentService = new StudentService(new StudentDAOImpl(), new StudentFileDAOImpl());
 
 	public static void main(String[] args) {
 
@@ -132,23 +134,23 @@ public class Main {
 
 	private static void showStudent() {
 
-		List<Student> students = studentService.getAllStudents();
-		if (students.isEmpty()) {
+		try {
+			List<String> students = studentService.getStudentsFromFile();
 
-			System.out.println("No students found");
+			if (students.isEmpty()) {
+				System.out.println("No students found");
+				return;
+			}
 
-			return;
+			System.out.println("\n--- Student List ---");
 
+			for (String student : students) {
+				System.out.println(student);
+			}
+
+		} catch (IOException e) {
+			System.out.println("Error reading student file: " + e.getMessage());
 		}
-
-		System.out.println("\n--- Student List ---");
-		for (Student std : students) {
-
-			System.out.println(showStudentInfo(std));
-			System.out.println("-------------------------");
-
-		}
-
 	}
 
 	private static void findStudent() {
@@ -171,14 +173,12 @@ public class Main {
 	private static void updateStudent() {
 
 		String nationalId = getValidNationalId();
+
 		Student student = studentService.findStudentByNationalId(nationalId);
 
 		if (student == null) {
-
 			System.out.println("Student not found!");
-
 			return;
-
 		}
 
 		while (true) {
@@ -188,28 +188,30 @@ public class Main {
 
 			System.out.println("Enter student age:");
 			int age = scanner.nextInt();
-
 			scanner.nextLine();
 
 			System.out.println("Enter student grade:");
 			double grade = scanner.nextDouble();
-
 			scanner.nextLine();
 
 			if (studentService.updateStudent(nationalId, name, age, grade)) {
 
-				System.out.println("Student updated successfully!");
+				try {
+					studentService.saveStudentsToFile();
+
+					System.out.println("Student updated successfully!");
+					System.out.println("Student data saved to file!");
+
+				} catch (IOException e) {
+					System.out.println("Error saving student file: " + e.getMessage());
+				}
 
 				break;
 
 			} else {
-
 				System.out.println("Invalid student data! Please try again");
-
 			}
-
 		}
-
 	}
 
 	private static void deleteStudent() {
