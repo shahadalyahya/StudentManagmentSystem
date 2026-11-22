@@ -39,4 +39,13 @@ public interface StudentDAO {
 	 */
 	public Student findStudentByNationalId(String nationalId);
 
+	/**
+	 * Updates an existing student's information using their national ID
+	 *
+	 * @param nationalId the national ID of the student to be updated
+	 * @param updatedStudent the student object containing the updated information
+	 * @return true if the student was updated successfully, false if not found
+	 */
+	public boolean updateStudent(String nationalId, Student updatedStudent);
+
 }
