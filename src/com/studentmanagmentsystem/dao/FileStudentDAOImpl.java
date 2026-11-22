@@ -36,11 +36,36 @@ public class FileStudentDAOImpl implements StudentDAO  {
 
 	@Override
 	public boolean deleteStudent(String nationalId) {
-		// TODO Auto-generated method stub
-		return false;
+
+	    if (Files.notExists(filePath)) {
+	        return false;
+	    }
+
+	    try {
+	        List<String> lines = Files.readAllLines(filePath);
+
+	        boolean isDeleted = lines.removeIf(line -> {
+	            String[] data = line.split(",");
+	            return data.length == 4 && data[0].equals(nationalId);
+	        });
+
+	        if (!isDeleted) {
+	            return false;
+	        }
+
+	        Files.write(
+	            filePath,
+	            lines,
+	            StandardOpenOption.TRUNCATE_EXISTING,
+	            StandardOpenOption.WRITE
+	        );
+
+	        return true;
+
+	    } catch (IOException e) {
+	        throw new UncheckedIOException("Failed to delete student", e);
+	    }
 	}
-
-
 	@Override
 	public List<Student> getAllStudents() {
 		// TODO Auto-generated method stub
