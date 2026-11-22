@@ -102,7 +102,7 @@ public class StudentService {
 		student.setAge(age);
 		student.setGrade(grade);
 
-		return true;
+		return studentDAO.updateStudent(nationalId, student);
 
 	}
 

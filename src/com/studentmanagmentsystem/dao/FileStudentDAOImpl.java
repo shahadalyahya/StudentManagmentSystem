@@ -69,6 +69,37 @@ public class FileStudentDAOImpl implements StudentDAO  {
 	@Override
 	public List<Student> getAllStudents() {
 		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public List<Student> getAllStudents() {
+
+		List<Student> students = new ArrayList<>();
+
+		try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+
+			String line;
+
+			while ((line = reader.readLine()) != null) {
+
+				String[] data = line.split(",");
+
+				Student student = new Student(data[0], data[1], Integer.parseInt(data[2]), Double.parseDouble(data[3]));
+
+				students.add(student);
+			}
+
+		} catch (IOException e) {
+			System.out.println("Error reading students file: " + e.getMessage());
+		}
+
+		return students;
+	}
+
+	@Override
+	public Student findStudentByNationalId(String nationalId) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

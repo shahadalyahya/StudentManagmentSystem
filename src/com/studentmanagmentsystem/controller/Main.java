@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+
+import com.studentmanagmentsystem.dao.FileStudentDAOImpl;
 import com.studentmanagmentsystem.dao.StudentDAOImpl;
 import com.studentmanagmentsystem.file.StudentFileDAOImpl;
 import com.studentmanagmentsystem.model.Student;
@@ -18,7 +20,7 @@ import com.studentmanagmentsystem.service.StudentService;
 public class Main {
 
 	static Scanner scanner = new Scanner(System.in);
-	static StudentService studentService = new StudentService(new StudentDAOImpl(), new StudentFileDAOImpl());
+	static StudentService studentService = new StudentService(new FileStudentDAOImpl());
 
 	public static void main(String[] args) {
 
