@@ -36,38 +36,6 @@ public class FileStudentDAOImpl implements StudentDAO  {
 
 	@Override
 	public boolean deleteStudent(String nationalId) {
-
-	    if (Files.notExists(filePath)) {
-	        return false;
-	    }
-
-	    try {
-	        List<String> lines = Files.readAllLines(filePath);
-
-	        boolean isDeleted = lines.removeIf(line -> {
-	            String[] data = line.split(",");
-	            return data.length == 4 && data[0].equals(nationalId);
-	        });
-
-	        if (!isDeleted) {
-	            return false;
-	        }
-
-	        Files.write(
-	            filePath,
-	            lines,
-	            StandardOpenOption.TRUNCATE_EXISTING,
-	            StandardOpenOption.WRITE
-	        );
-
-	        return true;
-
-	    } catch (IOException e) {
-	        throw new UncheckedIOException("Failed to delete student", e);
-	    }
-	}
-	@Override
-	public List<Student> getAllStudents() {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -103,6 +71,43 @@ public class FileStudentDAOImpl implements StudentDAO  {
 		return null;
 	}
 
+	@Override
+	public boolean updateStudent(String nationalId, Student updatedStudent) {
+
+		List<Student> students = getAllStudents();
+
+		boolean found = false;
+
+		for (int i = 0; i < students.size(); i++) {
+
+			if (students.get(i).getNationalId().equals(nationalId)) {
+
+				students.set(i, updatedStudent);
+				found = true;
+				break;
+			}
+		}
+
+		if (found) {
+
+			try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+
+				for (Student student : students) {
+
+					writer.write(student.getNationalId() + "," + student.getName() + "," + student.getAge() + ","
+							+ student.getGrade());
+
+					writer.newLine();
+				}
+
+			} catch (IOException e) {
+				System.out.println("Error updating students file: " + e.getMessage());
+				return false;
+			}
+		}
+
+		return found;
+	}
 
 	@Override
 	public Student findStudentByNationalId(String nationalId) {
