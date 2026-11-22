@@ -50,7 +50,28 @@ public class FileStudentDAOImpl implements StudentDAO  {
 
 	@Override
 	public Student findStudentByNationalId(String nationalId) {
-		// TODO Auto-generated method stub
+		if(Files.notExists(filePath)) {
+			return null;
+		}
+		
+		try {
+			List<String> lines = Files.readAllLines(filePath);
+			
+			for(String line : lines) {
+				
+				String[] data = line.split(",");
+				
+				if(data[0].equals(nationalId)) {
+					return new Student(data[0] , data[1] ,  
+							Integer.parseInt(data[2]) , Double.parseDouble(data[3]) );
+				}
+			}
+			
+			
+		}catch (IOException e) {
+	        throw new UncheckedIOException("Failed to read students", e);
+	    }
+		
 		return null;
 	}
 	
