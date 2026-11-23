@@ -1,6 +1,8 @@
 
 package com.studentmanagmentsystem.dao;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
@@ -15,186 +17,171 @@ import java.nio.charset.StandardCharsets;
 
 import com.studentmanagmentsystem.model.Student;
 
-public class FileStudentDAOImpl implements StudentDAO  {
+public class FileStudentDAOImpl implements StudentDAO {
 
-    private Path filePath;
+	private Path filePath;
+	private static final Logger logger = LogManager.getLogger(FileStudentDAOImpl.class);
 
-    public FileStudentDAOImpl() {
-        this.filePath = Paths.get("Students.txt");
-    }
+	public FileStudentDAOImpl() {
+		this.filePath = Paths.get("Students.txt");
+	}
 
-    @Override
-    public void addStudent(Student student) {
-        String data = student.getNationalId()+","+
-                      student.getName()+","+
-                      student.getAge()+","+
-                      student.getGrade();
+	@Override
+	public void addStudent(Student student) {
 
-        try (BufferedWriter writer = Files.newBufferedWriter(
-                filePath,
-                StandardCharsets.UTF_8,
-                StandardOpenOption.CREATE,
-                StandardOpenOption.APPEND)) {
+		logger.info("Starting to add student");
 
-            writer.write(data);
-            writer.newLine();
+		String data = student.getNationalId() + "," + student.getName() + "," + student.getAge() + ","
+				+ student.getGrade();
 
-        } catch(IOException e) {
-            throw new UncheckedIOException("Failed to save student", e);
-        }
-    }
+		try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8,
+				StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
 
-    @Override
-    public boolean deleteStudent(String nationalId) {
+			writer.write(data);
+			writer.newLine();
+		
+		} catch (IOException e) {
+			logger.error("Failed to save student", e);
+			throw new UncheckedIOException("Failed to save student", e);
+		}
+		logger.info("Student added successfully");
+	}
 
-        if (Files.notExists(filePath)) {
-            return false;
-        }
+	@Override
+	public boolean deleteStudent(String nationalId) {
 
-        try {
-            List<String> lines = new ArrayList<>();
+		if (Files.notExists(filePath)) {
+			return false;
+		}
 
-            try (BufferedReader reader = Files.newBufferedReader(
-                    filePath, StandardCharsets.UTF_8)) {
+		try {
+			List<String> lines = new ArrayList<>();
 
-                String line;
+			try (BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
 
-                while ((line = reader.readLine()) != null) {
-                    lines.add(line);
-                }
-            }
+				String line;
 
-            boolean isDeleted = lines.removeIf(line -> {
-                String[] data = line.split(",");
-                return data.length == 4 && data[0].equals(nationalId);
-            });
+				while ((line = reader.readLine()) != null) {
+					lines.add(line);
+				}
+			}
 
-            if (!isDeleted) {
-                return false;
-            }
+			boolean isDeleted = lines.removeIf(line -> {
+				String[] data = line.split(",");
+				return data.length == 4 && data[0].equals(nationalId);
+			});
 
-            try (BufferedWriter writer = Files.newBufferedWriter(
-                    filePath,
-                    StandardCharsets.UTF_8,
-                    StandardOpenOption.TRUNCATE_EXISTING,
-                    StandardOpenOption.WRITE)) {
+			if (!isDeleted) {
+				return false;
+			}
 
-                for (String line : lines) {
-                    writer.write(line);
-                    writer.newLine();
-                }
-            }
+			try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8,
+					StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE)) {
 
-            return true;
+				for (String line : lines) {
+					writer.write(line);
+					writer.newLine();
+				}
+			}
 
-        } catch (IOException e) {
-            throw new UncheckedIOException("Failed to delete student", e);
-        }
-    }
+			return true;
 
-    @Override
-    public List<Student> getAllStudents() {
+		} catch (IOException e) {
+			throw new UncheckedIOException("Failed to delete student", e);
+		}
+	}
 
-        List<Student> students = new ArrayList<>();
+	@Override
+	public List<Student> getAllStudents() {
 
-        try (BufferedReader reader = Files.newBufferedReader(filePath)) {
+		List<Student> students = new ArrayList<>();
 
-            String line;
+		try (BufferedReader reader = Files.newBufferedReader(filePath)) {
 
-            while ((line = reader.readLine()) != null) {
+			String line;
 
-                String[] data = line.split(",");
+			while ((line = reader.readLine()) != null) {
 
-                Student student = new Student(
-                        data[0],
-                        data[1],
-                        Integer.parseInt(data[2]),
-                        Double.parseDouble(data[3])
-                );
+				String[] data = line.split(",");
 
-                students.add(student);
-            }
+				Student student = new Student(data[0], data[1], Integer.parseInt(data[2]), Double.parseDouble(data[3]));
 
-        } catch (IOException e) {
-            System.out.println("Error reading students file: " + e.getMessage());
-        }
+				students.add(student);
+			}
 
-        return students;
-    }
+		} catch (IOException e) {
+			System.out.println("Error reading students file: " + e.getMessage());
+		}
 
-    @Override
-    public boolean updateStudent(String nationalId, Student updatedStudent) {
+		return students;
+	}
 
-        List<Student> students = getAllStudents();
+	@Override
+	public boolean updateStudent(String nationalId, Student updatedStudent) {
 
-        boolean found = false;
+		List<Student> students = getAllStudents();
 
-        for (int i = 0; i < students.size(); i++) {
+		boolean found = false;
 
-            if (students.get(i).getNationalId().equals(nationalId)) {
+		for (int i = 0; i < students.size(); i++) {
 
-                students.set(i, updatedStudent);
-                found = true;
-                break;
-            }
-        }
+			if (students.get(i).getNationalId().equals(nationalId)) {
 
-        if (found) {
+				students.set(i, updatedStudent);
+				found = true;
+				break;
+			}
+		}
 
-            try (BufferedWriter writer = Files.newBufferedWriter(
-                    filePath,
-                    StandardOpenOption.CREATE,
-                    StandardOpenOption.TRUNCATE_EXISTING)) {
+		if (found) {
 
-                for (Student student : students) {
+			try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardOpenOption.CREATE,
+					StandardOpenOption.TRUNCATE_EXISTING)) {
 
-                    writer.write(student.getNationalId() + "," +
-                            student.getName() + "," +
-                            student.getAge() + "," +
-                            student.getGrade());
+				for (Student student : students) {
 
-                    writer.newLine();
-                }
+					writer.write(student.getNationalId() + "," + student.getName() + "," + student.getAge() + ","
+							+ student.getGrade());
 
-            } catch (IOException e) {
-                System.out.println("Error updating students file: " + e.getMessage());
-                return false;
-            }
-        }
+					writer.newLine();
+				}
 
-        return found;
-    }
+			} catch (IOException e) {
+				System.out.println("Error updating students file: " + e.getMessage());
+				return false;
+			}
+		}
 
-    @Override
-    public Student findStudentByNationalId(String nationalId) {
+		return found;
+	}
 
-        if (Files.notExists(filePath)) {
-            return null;
-        }
+	@Override
+	public Student findStudentByNationalId(String nationalId) {
+		logger.info("Starting student search by ID");
+		if (Files.notExists(filePath)) {
+			logger.debug("Students file does not exist");
+			return null;
+		}
 
-        try (BufferedReader reader = Files.newBufferedReader(
-                filePath, StandardCharsets.UTF_8)) {
+		try (BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
 
-            String line;
+			String line;
 
-            while ((line = reader.readLine()) != null) {
+			while ((line = reader.readLine()) != null) {
 
-                String[] data = line.split(",");
+				String[] data = line.split(",");
 
-                if (data[0].equals(nationalId)) {
-                    return new Student(
-                            data[0],
-                            data[1],
-                            Integer.parseInt(data[2]),
-                            Double.parseDouble(data[3])
-                    );
-                }
-            }
+				if (data[0].equals(nationalId)) {
+					logger.info("Student found successfully");
+					return new Student(data[0], data[1], Integer.parseInt(data[2]), Double.parseDouble(data[3]));
+				}
+			}
 
-        } catch (IOException e) {
-            throw new UncheckedIOException("Failed to read students", e);
-        }
-
-        return null;
-    }
+		} catch (IOException e) {
+			logger.error("Failed to read students file", e);
+			throw new UncheckedIOException("Failed to read students", e);
+		}
+		logger.info("Student not found");
+		return null;
+	}
 }
