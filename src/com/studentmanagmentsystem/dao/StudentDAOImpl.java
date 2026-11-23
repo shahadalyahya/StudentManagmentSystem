@@ -62,4 +62,19 @@ public class StudentDAOImpl implements StudentDAO {
 
 	}
 
-}
+	@Override
+	public boolean updateStudent(String nationalId, Student updatedStudent) {
+
+		    for (int i = 0; i < students.size(); i++) {
+
+		        if (students.get(i).getNationalId().equals(nationalId)) {
+
+		            students.set(i, updatedStudent);
+		            return true;
+		        }
+		    }
+
+		    return false;
+		}
+	}
+
