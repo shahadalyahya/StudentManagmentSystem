@@ -1,5 +1,7 @@
 
 package com.studentmanagmentsystem.dao;
+import org.apache.logging.log4j.Logger;
+import com.studentmanagmentsystem.util.AppLogger;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,14 +53,12 @@ public class FileStudentDAOImpl implements StudentDAO {
 	@Override
 	public boolean deleteStudent(String nationalId) {
 
-		if (Files.notExists(filePath)) {
-			return false;
-		}
+	    logger.info("Starting student deletion. National ID: {}", nationalId);
 
-		try {
-			List<String> lines = new ArrayList<>();
-
-			try (BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
+	    if (Files.notExists(filePath)) {
+	        logger.warn("Student file does not exist.");
+	        return false;
+	    }
 
 				String line;
 
@@ -67,29 +67,27 @@ public class FileStudentDAOImpl implements StudentDAO {
 				}
 			}
 
-			boolean isDeleted = lines.removeIf(line -> {
-				String[] data = line.split(",");
-				return data.length == 4 && data[0].equals(nationalId);
-			});
+	        if (!isDeleted) {
+	            logger.warn("Student not found. National ID: {}", nationalId);
+	            return false;
+	        }
 
 			if (!isDeleted) {
 				return false;
 			}
 
-			try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8,
-					StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE)) {
+	        logger.info("Student deleted successfully. National ID: {}", nationalId);
+	        return true;
 
-				for (String line : lines) {
-					writer.write(line);
-					writer.newLine();
-				}
-			}
-
-			return true;
-
-		} catch (IOException e) {
-			throw new UncheckedIOException("Failed to delete student", e);
-		}
+	    } catch (IOException e) {
+	        logger.error("Failed to delete student. National ID: {}", nationalId, e);
+	        throw new UncheckedIOException("Failed to delete student", e);
+	    }
+	}
+	@Override
+	public List<Student> getAllStudents() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
