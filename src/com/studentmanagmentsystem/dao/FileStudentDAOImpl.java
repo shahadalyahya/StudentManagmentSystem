@@ -1,4 +1,6 @@
 package com.studentmanagmentsystem.dao;
+import org.apache.logging.log4j.Logger;
+import com.studentmanagmentsystem.util.AppLogger;
 
 import java.nio.file.Path;
 import java.nio.file.Files;
@@ -10,7 +12,8 @@ import com.studentmanagmentsystem.model.Student;
 
 
 public class FileStudentDAOImpl implements StudentDAO  {
-	
+	private static final Logger logger =
+	        AppLogger.getLogger(FileStudentDAOImpl.class);
 	private Path filePath ; 
 	
 	public FileStudentDAOImpl() {
@@ -33,11 +36,13 @@ public class FileStudentDAOImpl implements StudentDAO  {
 		}
 	}
 
-
 	@Override
 	public boolean deleteStudent(String nationalId) {
 
+	    logger.info("Starting student deletion. National ID: {}", nationalId);
+
 	    if (Files.notExists(filePath)) {
+	        logger.warn("Student file does not exist.");
 	        return false;
 	    }
 
@@ -50,6 +55,7 @@ public class FileStudentDAOImpl implements StudentDAO  {
 	        });
 
 	        if (!isDeleted) {
+	            logger.warn("Student not found. National ID: {}", nationalId);
 	            return false;
 	        }
 
@@ -60,9 +66,11 @@ public class FileStudentDAOImpl implements StudentDAO  {
 	            StandardOpenOption.WRITE
 	        );
 
+	        logger.info("Student deleted successfully. National ID: {}", nationalId);
 	        return true;
 
 	    } catch (IOException e) {
+	        logger.error("Failed to delete student. National ID: {}", nationalId, e);
 	        throw new UncheckedIOException("Failed to delete student", e);
 	    }
 	}
