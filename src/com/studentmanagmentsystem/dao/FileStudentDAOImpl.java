@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
-
+import com.studentmanagmentsystem.util.ConfigLoader;
 import com.studentmanagmentsystem.model.Student;
 
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +23,7 @@ public class FileStudentDAOImpl implements StudentDAO {
 	private Path filePath;
 
 	public FileStudentDAOImpl() {
-		this.filePath = Paths.get("Students.txt");
+		this.filePath = Paths.get(ConfigLoader.getProperty("student.file.path"));
 	}
 
 	@Override
