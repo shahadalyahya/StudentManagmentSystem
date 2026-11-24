@@ -1,7 +1,9 @@
-package com.studentmanagmentsystem.dao;
+package com.studentmanagmentsystem.dao.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.studentmanagmentsystem.dao.StudentDAO;
 import com.studentmanagmentsystem.model.Student;
 
 public class StudentDAOImpl implements StudentDAO {
@@ -65,16 +67,15 @@ public class StudentDAOImpl implements StudentDAO {
 	@Override
 	public boolean updateStudent(String nationalId, Student updatedStudent) {
 
-		    for (int i = 0; i < students.size(); i++) {
+		for (int i = 0; i < students.size(); i++) {
 
-		        if (students.get(i).getNationalId().equals(nationalId)) {
+			if (students.get(i).getNationalId().equals(nationalId)) {
 
-		            students.set(i, updatedStudent);
-		            return true;
-		        }
-		    }
-
-		    return false;
+				students.set(i, updatedStudent);
+				return true;
+			}
 		}
-	}
 
+		return false;
+	}
+}

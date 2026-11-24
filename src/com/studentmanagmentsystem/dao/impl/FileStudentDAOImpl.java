@@ -1,4 +1,4 @@
-package com.studentmanagmentsystem.dao;
+package com.studentmanagmentsystem.dao.impl;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,6 +12,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import com.studentmanagmentsystem.util.ConfigLoader;
+import com.studentmanagmentsystem.dao.StudentDAO;
 import com.studentmanagmentsystem.model.Student;
 
 import org.apache.logging.log4j.LogManager;
