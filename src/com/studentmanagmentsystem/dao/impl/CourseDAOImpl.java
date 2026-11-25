@@ -64,4 +64,46 @@ public class CourseDAOImpl implements CourseDAO {
 
 		return new ArrayList<>(courses);
 	}
+
+	@Override
+	public Course updateCourse(String courseCode, String name) {
+
+	    logger.info("Entering updateCourse method");
+
+	    Course course = findCourseByCode(courseCode);
+
+	    if (course == null) {
+	        logger.warn("Course not found. Course code: {}", courseCode);
+	        throw new IllegalArgumentException("Course not found");
+	    }
+
+	    course.setCourseName(name);
+
+	    logger.info("Course updated successfully. Course code: {}", courseCode);
+
+	    logger.info("Exiting updateCourse method");
+
+	    return course;
+	}
+
+	@Override
+	public void deleteCourse(String courseCode) {
+
+	    logger.info("Entering deleteCourse method");
+
+	    Course course = findCourseByCode(courseCode);
+
+	    if (course == null) {
+	        logger.warn("Course not found. Course code: {}", courseCode);
+	        throw new IllegalArgumentException("Course not found");
+	    }
+
+	    courses.remove(course);
+
+	    logger.info("Course deleted successfully. Course code: {}", courseCode);
+
+	    logger.info("Exiting deleteCourse method");
+	}
+	
+	
 }

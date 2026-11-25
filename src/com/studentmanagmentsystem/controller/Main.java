@@ -294,6 +294,60 @@ public class Main {
 	        showCourseInfo(course);
 	    }
 	}
+	public static void updateCourse() {
+
+	    System.out.println("\n===== Update Course =====");
+
+	    logger.info("Entering updateCourse method");
+
+	    try {
+	        System.out.println("Enter course code: ");
+	        String courseCode = scanner.nextLine();
+
+	        System.out.println("Enter the new name of course: ");
+	        String courseName = scanner.nextLine();
+
+	        courseService.updateCourse(courseCode, courseName);
+
+	        logger.info("Course updated successfully. Course code: {}", courseCode);
+
+	        System.out.println("\nCourse updated successfully!");
+
+	    } catch (IllegalArgumentException e) {
+
+	        logger.warn("Failed to update course: {}", e.getMessage());
+
+	        System.out.println("Error: " + e.getMessage());
+	    }
+
+	    logger.info("Exiting updateCourse method");
+	}
+	
+	public static void deleteCourse() {
+
+	    System.out.println("\n===== Delete Course =====");
+
+	    logger.info("Entering deleteCourse method");
+
+	    try {
+	        System.out.println("Enter course code: ");
+	        String courseCode = scanner.nextLine();
+
+	        courseService.deleteCourse(courseCode);
+
+	        logger.info("Course deleted successfully. Course code: {}", courseCode);
+
+	        System.out.println("\nCourse deleted successfully!");
+
+	    } catch (IllegalArgumentException e) {
+
+	        logger.warn("Failed to delete course: {}", e.getMessage());
+
+	        System.out.println("Error: " + e.getMessage());
+	    }
+
+	    logger.info("Exiting deleteCourse method");
+	}
 	
 	private static void showCourseInfo(Course course) {
 
@@ -459,6 +513,17 @@ public class Main {
 	                    logger.info("User selected Search Course");
 	                    findCourse();
 	                    break;
+	                    
+	                case 4:
+	                    logger.info("User selected update Course");
+	                    updateCourse();
+	                    break;
+	                
+	                case 5:
+	                    logger.info("User selected delete Course");
+	                    deleteCourse();
+	                    break;
+
 
 	                case 0:
 	                    logger.info("User returned to Main Menu from Course Management");

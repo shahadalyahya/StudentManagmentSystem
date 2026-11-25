@@ -72,6 +72,32 @@ public class CourseService {
 
 		return course;
 	}
+	
+	public void updateCourse(String courseCode, String name) {
+
+	    logger.info("Entering updateCourse method");
+
+	    validateCourseCode(courseCode);
+
+	    logger.debug("Course code validated successfully: {}", courseCode);
+
+	    courseDAO.updateCourse(courseCode, name);
+
+	    logger.info("Exiting updateCourse method");
+	}
+	
+	public void deleteCourse(String courseCode) {
+
+	    logger.info("Entering deleteCourse method");
+
+	    validateCourseCode(courseCode);
+
+	    logger.debug("Course code validated successfully: {}", courseCode);
+
+	    courseDAO.deleteCourse(courseCode);
+
+	    logger.info("Exiting deleteCourse method");
+	}
 
 	/**
 	 * Validates the course object and its required fields

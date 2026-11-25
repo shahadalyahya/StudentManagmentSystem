@@ -25,4 +25,9 @@ public interface CourseDAO {
      * @return a list containing all courses
      */
 	List<Course> getAllCourses();
+	
+	
+	Course updateCourse(String courseCode , String name);
+	
+	void deleteCourse(String courseCode);
 }
