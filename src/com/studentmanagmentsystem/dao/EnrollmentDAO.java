@@ -1,20 +1,20 @@
 package com.studentmanagmentsystem.dao;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import com.studentmanagmentsystem.model.Course;
 import com.studentmanagmentsystem.model.Enrollment;
-import com.studentmanagmentsystem.model.Student;
 
 public interface EnrollmentDAO {
 	
-	void addEnrollment(String nationalId , String courseCode);
+	boolean addEnrollment(String nationalId , String courseCode);
 	
 	void removeEnrollment(Enrollment enrollment);
 	
 	ArrayList<Course> getCourseCodesByStudent();
 	
-	ArrayList<Student> getStudentIdsByCourse();
+	Set<String> getStudentIdsByCourse(String courseCode);
 	
 	void deleteEnrollmentsByStudent(String nationalId);
 	
